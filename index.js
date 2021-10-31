@@ -7,12 +7,14 @@ const PORT = process.env.PORT;
 
 const app = express();
 
-app.get('/:url', async (req, res) => {
+app.use('/',async (req,res) => {
+  console.log(req.headers);
   try {
-    const result = await axios.get(req.originalUrl)
-    res.status(200).json(result)
+    const authorization  = req.headers.authorization ? req.headers.authorization : null 
+    const result = await axios.get(`https:/${req.originalUrl}`, { headers: {authorization} } )
+    res.status(200).json(result.data)
   } catch(err) {
-    console.error(err)
+    console.error(err.message)
     res.status(500).send('server error')
   }
 })
